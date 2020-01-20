@@ -1,4 +1,5 @@
-from main.database import *
+import django
+from main.database import * 
 from main.models import *
 
 
@@ -6,20 +7,7 @@ def delete_tables():
     Rating.objects.all().delete()
     User.objects.all().delete()
     Peripheral.objects.all().delete()
-    Type.objects.all().delete()
 
-
-def populate_types():
-    print("Loading peripherals types...")
-
-    types = get_types()
-    res = []
-    for type_db in types:
-        res.append(Type(id=int(type_db[0], typeName=type[1])))
-    Type.objects.bulk_create(res)
-
-    print("Genres inserted: " + str(Type.objects.count()))
-    print("---------------------------------------------------------")
 
 
 # TODO: poblar usuarios a mansalva en algún momento
@@ -48,14 +36,14 @@ def populate_users():
 
 def populate_peripherals():
     print("Loading peripherals...")
-
     res = []
     peripherals = get_peripherals()
     for peripheral in peripherals:
+        print(peripheral)
         res.append(
-            Peripheral(id=peripheral.id, brand=peripheral.brand, image=peripheral.image, price=peripheral.price,
-                       category=peripheral.category, type=peripheral.types, stars=peripheral.stars,
-                       ratings=peripheral.ratings)
+            Peripheral(brand=peripheral[1], image=peripheral[2], price=peripheral[3],
+                       type_db=peripheral[5], stars=peripheral[4])
+        
         )
 
     Peripheral.objects.bulk_create(res)
@@ -81,10 +69,10 @@ def populate_ratings(user, peripheral):
 
 
 def populate_db():
-    delete_tables()
-    u = populate_users()
+   # delete_tables()
+   # u = populate_users()
     p = populate_peripherals()
-    populate_ratings(u, p)
+   # populate_ratings(u, p)
     print("Finished database population")
 
 

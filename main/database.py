@@ -1,5 +1,4 @@
 import requests
-from selenium import webdriver
 import time
 from bs4 import BeautifulSoup
 
@@ -11,7 +10,8 @@ def get_soup(url):
 
 
 def get_peripherals():
-    return None
+    res = [__get_chairs(), __get_headsets(), __get_keyboards(), __get_mice(), __get_monitors(), __get_mouse_pads(), __get_routers()]
+    return res
 
 
 def __get_monitors():
