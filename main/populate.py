@@ -7,27 +7,13 @@ def delete_tables():
     Rating.objects.all().delete()
     User.objects.all().delete()
     Peripheral.objects.all().delete()
-    Category.objects.all().delete()
     Type.objects.all().delete()
-
-
-def populate_categories():
-    print("Loading categories...")
-
-    categories = get_categories()
-    res = []
-    for category in categories:
-        res.append(Category(id=int(category[0]), categoryName=str(category[1])))
-    Category.objects.bulk_create(res)  # bulk_create hace la carga masiva para acelerar el proceso
-
-    print("Categories inserted: " + str(Category.objects.count()))
-    print("---------------------------------------------------------")
 
 
 def populate_types():
     print("Loading peripherals types...")
 
-    types = get_categories()
+    types = get_types()
     res = []
     for type_db in types:
         res.append(Type(id=int(type_db[0], typeName=type[1])))
@@ -96,7 +82,6 @@ def populate_ratings(user, peripheral):
 
 def populate_db():
     delete_tables()
-    populate_categories()
     u = populate_users()
     p = populate_peripherals()
     populate_ratings(u, p)

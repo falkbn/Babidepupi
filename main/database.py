@@ -16,11 +16,6 @@ def get_soup(url):
     return soup
 
 
-def get_categories():
-    res = ["Office", "Gaming", "Other"]
-    return res
-
-
 def get_types():
     res = ["Monitor", "Speaker", "Keyboards", "Chairs", "Mouse", "Headset", "Printer"]
     return res
@@ -85,12 +80,3 @@ def get_ratings():
     datablock = get_soup(url)
     res = []
     return res
-
-
-browser = webdriver.Chrome()
-browser.get("https://www.pccomponentes.com/impresoras")
-time.sleep(5)
-doc = browser.find_element(id="btnMore")
-doc.click()
-time.sleep(3)
-print(browser)

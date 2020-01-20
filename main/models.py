@@ -2,13 +2,6 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-class Category(models.Model):
-    categoryName = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.categoryName
-
-
 class Type(models.Model):
     typeName = models.CharField(max_length=20)
 
@@ -29,7 +22,6 @@ class Peripheral(models.Model):
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=6, decimal_places=2)
-    category = models.ManyToManyField(Category)
     types = models.ManyToManyField(Type)
     ratings = models.ManyToManyField(User, through="Rating")
 
