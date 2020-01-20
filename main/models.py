@@ -17,7 +17,7 @@ class Peripheral(models.Model):
     image = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     type_db = models.CharField(max_length=100)
-    stars = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    stars = models.PositiveSmallIntegerField()
 
     def __str__(self):
         return self.name

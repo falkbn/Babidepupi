@@ -39,12 +39,13 @@ def populate_peripherals():
     res = []
     peripherals = get_peripherals()
     for peripheral in peripherals:
-        print(peripheral)
-        res.append(
-            Peripheral(brand=peripheral[1], image=peripheral[2], price=peripheral[3],
-                       type_db=peripheral[5], stars=peripheral[4])
-        
-        )
+        for item in peripheral:
+            print(item)
+            res.append(
+                Peripheral(name = item[0],brand=item[1], image=item[2], price=item[3],
+                        type_db=item[5], stars=item[4])
+            
+            )
 
     Peripheral.objects.bulk_create(res)
 

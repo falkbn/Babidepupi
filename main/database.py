@@ -1,6 +1,7 @@
 import requests
 import time
 from bs4 import BeautifulSoup
+from decimal import Decimal
 
 
 def get_soup(url):
@@ -10,6 +11,8 @@ def get_soup(url):
 
 
 def get_peripherals():
+    
+   
     res = [__get_chairs(), __get_headsets(), __get_keyboards(), __get_mice(), __get_monitors(), __get_mouse_pads(), __get_routers()]
     return res
 
@@ -22,12 +25,12 @@ def __get_monitors():
         name = data.find('div', class_='vs-product-card-title').a.text.strip()
         brand = data.find('div', class_='vs-product-card-detail').a.text.strip()
         image = data.find('div', class_='vs-product-card-image').img['src']
-        price = data.find('div', class_='vs-product-card-prices-price')
+        price = Decimal(data.find('span', class_='vs-product-card-prices-price').text.split(' ')[0].replace('.', '').replace(',', '.'))
         stars = len(data.find_all('i', class_='vs-icon-star-full'))
         if data.find('i', class_='vs-icon-star-half'):
             stars += 0.5
         if stars == 0:
-            stars = None
+            stars = 0
         type_db = "Monitor"
 
         monitor = [name, brand, image, price, stars, type_db]
@@ -43,12 +46,12 @@ def __get_routers():
         name = data.find('div', class_='vs-product-card-title').a.text.strip()
         brand = data.find('div', class_='vs-product-card-detail').a.text.strip()
         image = data.find('div', class_='vs-product-card-image').img['src']
-        price = data.find('div', class_='vs-product-card-prices-price')
+        price = Decimal(data.find('span', class_='vs-product-card-prices-price').text.split(' ')[0].replace('.', '').replace(',', '.'))
         stars = len(data.find_all('i', class_='vs-icon-star-full'))
         if data.find('i', class_='vs-icon-star-half'):
             stars += 0.5
         if stars == 0:
-            stars = None
+            stars = 0
         type_db = "Router"
 
         router = [name, brand, image, price, stars, type_db]
@@ -64,12 +67,12 @@ def __get_keyboards():
         name = data.find('div', class_='vs-product-card-title').a.text.strip()
         brand = data.find('div', class_='vs-product-card-detail').a.text.strip()
         image = data.find('div', class_='vs-product-card-image').img['src']
-        price = data.find('div', class_='vs-product-card-prices-price')
+        price = Decimal(data.find('span', class_='vs-product-card-prices-price').text.split(' ')[0].replace('.', '').replace(',', '.'))
         stars = len(data.find_all('i', class_='vs-icon-star-full'))
         if data.find('i', class_='vs-icon-star-half'):
             stars += 0.5
         if stars == 0:
-            stars = None
+            stars = 0
         type_db = "Keyboard"
 
         keyboard = [name, brand, image, price, stars, type_db]
@@ -85,12 +88,14 @@ def __get_chairs():
         name = data.find('div', class_='vs-product-card-title').a.text.strip()
         brand = data.find('div', class_='vs-product-card-detail').a.text.strip()
         image = data.find('div', class_='vs-product-card-image').img['src']
-        price = data.find('div', class_='vs-product-card-prices-price')
+        price = data.find('span', class_='vs-product-card-prices-price').text
+        price = price.split(' ')[0].replace(',', '.')
+        price = Decimal(price)
         stars = len(data.find_all('i', class_='vs-icon-star-full'))
         if data.find('i', class_='vs-icon-star-half'):
             stars += 0.5
         if stars == 0:
-            stars = None
+            stars = 0
         type_db = "Chair"
 
         chair = [name, brand, image, price, stars, type_db]
@@ -106,12 +111,12 @@ def __get_mice():
         name = data.find('div', class_='vs-product-card-title').a.text.strip()
         brand = data.find('div', class_='vs-product-card-detail').a.text.strip()
         image = data.find('div', class_='vs-product-card-image').img['src']
-        price = data.find('div', class_='vs-product-card-prices-price')
+        price = Decimal(data.find('span', class_='vs-product-card-prices-price').text.split(' ')[0].replace('.', '').replace(',', '.'))
         stars = len(data.find_all('i', class_='vs-icon-star-full'))
         if data.find('i', class_='vs-icon-star-half'):
             stars += 0.5
         if stars == 0:
-            stars = None
+            stars = 0
         type_db = "Mouse"
 
         mouse = [name, brand, image, price, stars, type_db]
@@ -127,12 +132,12 @@ def __get_headsets():
         name = data.find('div', class_='vs-product-card-title').a.text.strip()
         brand = data.find('div', class_='vs-product-card-detail').a.text.strip()
         image = data.find('div', class_='vs-product-card-image').img['src']
-        price = data.find('div', class_='vs-product-card-prices-price')
+        price = Decimal(data.find('span', class_='vs-product-card-prices-price').text.split(' ')[0].replace('.', '').replace(',', '.'))
         stars = len(data.find_all('i', class_='vs-icon-star-full'))
         if data.find('i', class_='vs-icon-star-half'):
             stars += 0.5
         if stars == 0:
-            stars = None
+            stars = 0
         type_db = "Mouse"
 
         headset = [name, brand, image, price, stars, type_db]
@@ -148,12 +153,12 @@ def __get_mouse_pads():
         name = data.find('div', class_='vs-product-card-title').a.text.strip()
         brand = data.find('div', class_='vs-product-card-detail').a.text.strip()
         image = data.find('div', class_='vs-product-card-image').img['src']
-        price = data.find('div', class_='vs-product-card-prices-price')
+        price = Decimal(data.find('span', class_='vs-product-card-prices-price').text.split(' ')[0].replace('.', '').replace(',', '.'))
         stars = len(data.find_all('i', class_='vs-icon-star-full'))
         if data.find('i', class_='vs-icon-star-half'):
             stars += 0.5
         if stars == 0:
-            stars = None
+            stars = 0
         type_db = "Mouse Pads"
 
         pad = [name, brand, image, price, stars, type_db]
