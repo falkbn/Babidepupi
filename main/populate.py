@@ -1,4 +1,3 @@
-from datetime import datetime
 from main.database import *
 from main.models import *
 
@@ -54,8 +53,9 @@ def populate_peripherals():
     peripherals = get_peripherals()
     for peripheral in peripherals:
         res.append(
-            Peripheral(id=peripheral.id, brand=peripheral.brand, price=peripheral.price,
-                       category=peripheral.category, types=peripheral.types, ratings=peripheral.ratings)
+            Peripheral(id=peripheral.id, brand=peripheral.brand, image=peripheral.image, price=peripheral.price,
+                       category=peripheral.category, type=peripheral.types, stars=peripheral.stars,
+                       ratings=peripheral.ratings)
         )
 
     Peripheral.objects.bulk_create(res)
