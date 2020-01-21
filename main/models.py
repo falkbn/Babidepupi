@@ -30,4 +30,4 @@ class Rating(models.Model):
     rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
-        return str(self.rating)
+        return str(self.rating) + "User: "+ str(self.user.id) + "Periph: " + str(self.peripheral.id)
