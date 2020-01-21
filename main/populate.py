@@ -41,7 +41,6 @@ def populate_peripherals():
     peripherals = get_peripherals()
     for peripheral in peripherals:
         for item in peripheral:
-            print(item)
             res.append(
                 Peripheral(name=item[0], brand=item[1], image=item[2], price=item[3],
                            type_db=item[5], stars=item[4])
