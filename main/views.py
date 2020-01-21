@@ -44,9 +44,12 @@ def recommended_peripheral_user(request):
             id_user = form.cleaned_data['id']
             user = get_object_or_404(User, pk=id_user)
             shelf = shelve.open("dataRS.dat")
-            Prefs = shelf['Prefs']
+            prefs = shelf['Prefs']
+            items = []
+            if int(id_user) not in prefs:
+                return render(request, 'recommendationItems.html', {'user': user, 'items': items})
             shelf.close()
-            rankings = getRecommendations(Prefs, int(id_user))
+            rankings = getRecommendations(prefs, int(id_user))
             recommended = rankings[:2]
             peripherals = []
             scores = []

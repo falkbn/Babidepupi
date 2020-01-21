@@ -7,4 +7,4 @@ class UserForm(forms.Form):
 
 
 class PeripheralForm(forms.Form):
-    id = forms.CharField(label='Movie ID')
+    id = forms.CharField(label='Peripheral ID')
