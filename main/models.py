@@ -9,7 +9,7 @@ class User(models.Model):
     zipCode = models.CharField(max_length=8)
 
     def __str__(self):
-        return self.gender + " " + self.zipCode
+        return self.username
 
 
 class Peripheral(models.Model):

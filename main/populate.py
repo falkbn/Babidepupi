@@ -1,6 +1,7 @@
-import django
 from main.database import *
 from main.models import *
+
+import random
 
 
 def delete_tables():
@@ -23,7 +24,7 @@ def populate_users():
         username = str(trimed[1].strip())
         age = int(trimed[2].strip())
         gender = str(trimed[3].strip())
-        zip_code = int(trimed[4].strip())
+        zip_code = str(trimed[4].strip())
         u = User(id=id_user, username=username, age=age, gender=gender, zipCode=zip_code)
         res.append(u)
         dict[id_user] = u
@@ -55,14 +56,22 @@ def populate_peripherals():
     return res
 
 
-def populate_ratings(user, peripheral):
+def populate_ratings(number_ratings):
     print("Loading ratings...")
     Rating.objects.all().delete()
 
     res = []
-    ratings = get_ratings()
-    for rating in ratings:
-        res.append(Rating(user=user, peripheral=peripheral, rating=rating))
+    i = 0
+    while i < number_ratings:
+        random_user = User.objects.get(id=random.randint(1, User.objects.count()))
+        peripherals = Peripheral.objects.all()
+        peripherals_id = []
+        for peripheral in peripherals:
+            peripherals_id.append(peripheral.pk)
+        random_score = random.randint(1, 5)
+        random_peripheral = Peripheral.objects.get(id=peripherals_id[random.randint(1, len(peripherals_id))])
+        res.append(Rating(user=random_user, peripheral=random_peripheral, rating=random_score))
+        i += 1
     Rating.objects.bulk_create(res)
 
     print("Ratings inserted: " + str(Rating.objects.count()))
@@ -71,9 +80,9 @@ def populate_ratings(user, peripheral):
 
 def populate_db():
     delete_tables()
-    u = populate_users()
-    p = populate_peripherals()
-    # populate_ratings(u, p)
+    populate_users()
+    populate_peripherals()
+    populate_ratings(10)
     print("Finished database population")
 
 
