@@ -1,6 +1,7 @@
 # encoding:utf-8
 
 from math import sqrt
+from main.models import Rating, Peripheral
 
 
 # Returns a distance-based similarity score for person1 and person2
@@ -147,3 +148,100 @@ def getRecommendedItems(prefs, itemMatch, user):
     rankings.sort()
     rankings.reverse()
     return rankings
+
+
+def getHybridRecommendation(prefs, user, itemMatch, similarity=sim_pearson):
+    
+    user_scores = geRecommendationsByUser(prefs, user, similarity)
+    item_scores = getRecomendationsByItem(prefs, itemMatch, user)
+
+    scores = list(user_scores.keys())
+    totals = list(item_scores.keys())
+
+    scores.extend(totals)
+
+    common_items = scores
+    common_items = set(common_items)
+    
+    pond = Rating.objects.count()/Peripheral.objects.count()
+
+    res = []
+    for item in common_items:
+        score = user_scores[item] if item in user_scores else 0
+        total = item_scores[item] if item in item_scores else 0
+
+        score = score * pond
+        total  = total * 100
+        final_rank = (score+total)/2
+
+        res.append([final_rank, item])
+     
+    res.sort()
+    res.reverse()    
+
+    max_rank = res[0][0]
+    min_rank = res[-1][0]
+    res_normalized = []
+    for final_rank, item in res:
+        normalized = (int(final_rank)-min_rank)/(max_rank-min_rank) * 5
+        res_normalized.append([normalized, item])
+
+    res_normalized.sort()
+    res_normalized.reverse() 
+         
+    return res_normalized
+
+
+
+
+def getRecomendationsByItem(prefs, itemMatch, user):
+    userRatings = prefs[user]
+    scores = {}
+    totalSim = {}
+    # Loop over items rated by this user
+    for (item, rating) in userRatings.items():
+        # Loop over items similar to this one
+        for (similarity, item2) in itemMatch[item]:
+            # Ignore if this user has already rated this item
+            if item2 in userRatings: continue
+            # Weighted sum of rating times similarity
+            scores.setdefault(item2, 0)
+            scores[item2] += similarity * rating
+            # Sum of all the similarities
+            totalSim.setdefault(item2, 0)
+            totalSim[item2] += similarity
+
+    # Divide each total score by total weighting to get an average
+    try:
+        rankings = {}
+        for item, score in scores.items():
+            rankings[item] = (score / totalSim[item])
+    except ZeroDivisionError:
+        rankings = {}
+    return rankings
+
+def geRecommendationsByUser(prefs, person, similarity=sim_pearson):
+    totals = {}
+    simSums = {}
+    for other in prefs:
+        # don't compare me to myself
+        if other == person: continue
+        sim = similarity(prefs, person, other)
+        # ignore scores of zero or lower
+        if sim <= 0: continue
+        for item in prefs[other]:
+            # only score movies I haven't seen yet
+            if item not in prefs[person] or prefs[person][item] == 0:
+                # Similarity * Score
+                totals.setdefault(item, 0)
+                totals[item] += prefs[other][item] * sim
+                # Sum of similarities
+                simSums.setdefault(item, 0)
+                simSums[item] += sim
+
+    # Create the normalized list
+    rankings = {}
+    for item, total in totals.items():
+            rankings[item] = (total / simSums[item])
+    return rankings
+
