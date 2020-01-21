@@ -50,7 +50,7 @@ def recommended_peripheral_user(request):
                 return render(request, 'recommendationItems.html', {'user': user, 'items': items})
             shelf.close()
             rankings = getRecommendations(prefs, int(id_user))
-            recommended = rankings[:2]
+            recommended = rankings[:20] # Change number of similar items recommended
             peripherals = []
             scores = []
             for re in recommended:
@@ -70,13 +70,14 @@ def recommended_peripheral_items(request):
             user = get_object_or_404(User, pk=id_user)
             shelf = shelve.open("dataRS.dat")
             prefs = shelf['Prefs']
+            print(prefs)
             sim_items = shelf['SimItems']
             items = []
             if int(id_user) not in prefs:
                 return render(request, 'recommendationItems.html', {'user': user, 'items': items})
             shelf.close()
             rankings = getRecommendedItems(prefs, sim_items, int(id_user))
-            recommended = rankings[:2]  # Change number of similar items recommended
+            recommended = rankings[:20]  # Change number of similar items recommended
             peripherals = []
             scores = []
             for re in recommended:
@@ -97,7 +98,7 @@ def similar_peripherals(request):
             shelf = shelve.open("dataRS.dat")
             items_prefs = shelf['ItemsPrefs']
             shelf.close()
-            recommended = topMatches(items_prefs, int(id_peripheral), n=3)  # n: number of similar items
+            recommended = topMatches(items_prefs, int(id_peripheral), n=20)  # n: number of similar items
             peripherals = []
             similar = []
             for re in recommended:
@@ -118,6 +119,9 @@ def recommended_users_peripherals(request):
             shelf = shelve.open("dataRS.dat")
             prefs = shelf['ItemsPrefs']
             shelf.close()
+            items = []
+            if int(id_peripheral) not in prefs:
+                return render(request, 'recommendationUsers.html', {'peripheral': peripheral, 'items': items})
             rankings = getRecommendations(prefs, int(id_peripheral))
             recommended = rankings[:3]  # number of recommended items
             peripherals = []

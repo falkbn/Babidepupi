@@ -7,7 +7,7 @@
 <section>
     <h1>Peripherals and Scores for user {{user.id}}</h1>
     {% for rating in user.rating_set.all %}
-    <ul>Peripherals: {{rating.peripheral.name}} - Rating: {{rating.rating}}</ul>
+    <ul>Name: {{rating.peripheral.name}} - Rating: {{rating.rating}}</ul>
     {% empty %}
     <h2>User has no ratings yet</h2>
     {% endfor %}
