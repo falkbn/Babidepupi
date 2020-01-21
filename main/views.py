@@ -1,139 +1,136 @@
 import shelve
 from main.models import User, Peripheral, Rating
-from main.forms import UserForm, FilmForm
+from main.forms import UserForm, PeripheralForm
 from django.shortcuts import render, get_object_or_404
-from main.recommendations import  transformPrefs, calculateSimilarItems, getRecommendations, getRecommendedItems, topMatches
+from main.recommendations import transformPrefs, calculateSimilarItems, getRecommendations, getRecommendedItems, \
+    topMatches
 from main.populate import populate_db
 
 
-# Funcion que carga en el diccionario Prefs todas las puntuaciones de usuarios a peliculas. Tambien carga el diccionario inverso y la matriz de similitud entre items
-# Serializa los resultados en dataRS.dat
-def loadDict():
-    Prefs={}   # matriz de usuarios y puntuaciones a cada a items
+def load_dict():
+    prefs = {}
     shelf = shelve.open("dataRS.dat")
     ratings = Rating.objects.all()
     for ra in ratings:
         user = int(ra.user.id)
-        itemid = int(ra.film.id)
+        item_id = int(ra.peripheral.id)
         rating = float(ra.rating)
-        Prefs.setdefault(user, {})
-        Prefs[user][itemid] = rating
-    shelf['Prefs']=Prefs
-    shelf['ItemsPrefs']=transformPrefs(Prefs)
-    shelf['SimItems']=calculateSimilarItems(Prefs, n=10)
+        prefs.setdefault(user, {})
+        prefs[user][item_id] = rating
+    shelf['Prefs'] = prefs
+    shelf['ItemsPrefs'] = transformPrefs(prefs)
+    shelf['SimItems'] = calculateSimilarItems(prefs, n=10)
     shelf.close()
-    
 
 
-    
-#  CONJUNTO DE VISTAS
+def index(request):
+    return render(request, 'index.html')
 
-def index(request): 
-    return render(request,'index.html')
 
-def populateDB(request):
-    populate_db() 
-    return render(request,'populate.html')
+def populate_db(request):
+    populate_db()
+    return render(request, 'populate.html')
 
-def loadRS(request):
-    loadDict()
-    return render(request,'loadRS.html')
- 
-# APARTADO A
-def recommendedFilmsUser(request):
-    if request.method=='GET':
+
+def load_rs(request):
+    load_dict()
+    return render(request, 'loadRS.html')
+
+
+def recommended_peripheral_user(request):
+    if request.method == 'GET':
         form = UserForm(request.GET, request.FILES)
         if form.is_valid():
-            idUser = form.cleaned_data['id']
-            user = get_object_or_404(UserInformation, pk=idUser)
+            id_user = form.cleaned_data['id']
+            user = get_object_or_404(User, pk=id_user)
             shelf = shelve.open("dataRS.dat")
             Prefs = shelf['Prefs']
             shelf.close()
-            rankings = getRecommendations(Prefs,int(idUser))
+            rankings = getRecommendations(Prefs, int(id_user))
             recommended = rankings[:2]
             films = []
             scores = []
             for re in recommended:
-                films.append(Film.objects.get(pk=re[1]))
+                films.append(Peripheral.objects.get(pk=re[1]))
                 scores.append(re[0])
-            items= zip(films,scores)
-            return render(request,'recommendationItems.html', {'user': user, 'items': items})
+            items = zip(films, scores)
+            return render(request, 'recommendationItems.html', {'user': user, 'items': items})
     form = UserForm()
-    return render(request,'search_user.html', {'form': form})
+    return render(request, 'searchUser.html', {'form': form})
 
-# APARTADO B
-def recommendedFilmsItems(request):
-    if request.method=='GET':
+
+def recommended_peripheral_items(request):
+    if request.method == 'GET':
         form = UserForm(request.GET, request.FILES)
         if form.is_valid():
-            idUser = form.cleaned_data['id']
-            user = get_object_or_404(UserInformation, pk=idUser)
+            id_user = form.cleaned_data['id']
+            user = get_object_or_404(User, pk=id_user)
             shelf = shelve.open("dataRS.dat")
             Prefs = shelf['Prefs']
-            SimItems = shelf['SimItems']
+            sim_items = shelf['SimItems']
             shelf.close()
-            rankings = getRecommendedItems(Prefs, SimItems, int(idUser))
-            recommended = rankings[:2]
-            films = []
+            rankings = getRecommendedItems(Prefs, sim_items, int(id_user))
+            recommended = rankings[:2]  # Change number of similar items recommended
+            peripherals = []
             scores = []
             for re in recommended:
-                films.append(Film.objects.get(pk=re[1]))
+                peripherals.append(Peripheral.objects.get(pk=re[1]))
                 scores.append(re[0])
-            items= zip(films,scores)
-            return render(request,'recommendationItems.html', {'user': user, 'items': items})
+            items = zip(peripherals, scores)
+            return render(request, 'recommendationItems.html', {'user': user, 'items': items})
     form = UserForm()
-    return render(request,'search_user.html', {'form': form})
+    return render(request, 'searchUser.html', {'form': form})
 
-# APARTADO C
-def similarFilms(request):
-    film = None
-    if request.method=='GET':
-        form = FilmForm(request.GET, request.FILES)
+
+def similar_peripherals(request):
+    if request.method == 'GET':
+        form = PeripheralForm(request.GET, request.FILES)
         if form.is_valid():
-            idFilm = form.cleaned_data['id']
-            film = get_object_or_404(Film, pk=idFilm)
+            id_peripheral = form.cleaned_data['id']
+            peripheral = get_object_or_404(Peripheral, pk=id_peripheral)
             shelf = shelve.open("dataRS.dat")
-            ItemsPrefs = shelf['ItemsPrefs']
+            items_prefs = shelf['ItemsPrefs']
             shelf.close()
-            recommended = topMatches(ItemsPrefs, int(idFilm),n=3)
-            films = []
+            recommended = topMatches(items_prefs, int(id_peripheral), n=3)  # n: number of similar items
+            peripherals = []
             similar = []
             for re in recommended:
-                films.append(Film.objects.get(pk=re[1]))
+                peripherals.append(Peripheral.objects.get(pk=re[1]))
                 similar.append(re[0])
-            items= zip(films,similar)
-            return render(request,'similarFilms.html', {'film': film,'films': items})
-    form = FilmForm()
-    return render(request,'search_film.html', {'form': form})
+            items = zip(peripherals, similar)
+            return render(request, 'similarPeripherals.html', {'peripheral': peripheral, 'peripherals': items})
+    form = PeripheralForm()
+    return render(request, 'searchPeripheral.html', {'form': form})
 
-# APARTADO D
-def recommendedUsersFilms(request):
-    if request.method=='GET':
-        form = FilmForm(request.GET, request.FILES)
+
+def recommended_users_peripherals(request):
+    if request.method == 'GET':
+        form = PeripheralForm(request.GET, request.FILES)
         if form.is_valid():
-            idFilm = form.cleaned_data['id']
-            film = get_object_or_404(Film, pk=idFilm)
+            id_peripheral = form.cleaned_data['id']
+            peripheral = get_object_or_404(Peripheral, pk=id_peripheral)
             shelf = shelve.open("dataRS.dat")
-            Prefs = shelf['ItemsPrefs']
+            prefs = shelf['ItemsPrefs']
             shelf.close()
-            rankings = getRecommendations(Prefs,int(idFilm))
-            recommended = rankings[:3]
-            films = []
+            rankings = getRecommendations(prefs, int(id_peripheral))
+            recommended = rankings[:3]  # number of recommended items
+            peripherals = []
             scores = []
             for re in recommended:
-                films.append(UserInformation.objects.get(pk=re[1]))
+                peripherals.append(User.objects.get(pk=re[1]))
                 scores.append(re[0])
-            items= zip(films,scores)
-            return render(request,'recommendationUsers.html', {'film': film, 'items': items})
-    form = FilmForm()
-    return render(request,'search_film.html', {'form': form})
-#APARTADO E
+            items = zip(peripherals, scores)
+            return render(request, 'recommendationUsers.html', {'peripheral': peripheral, 'items': items})
+    form = PeripheralForm()
+    return render(request, 'searchPeripheral.html', {'form': form})
+
+
 def search(request):
-    if request.method=='GET':
+    if request.method == 'GET':
         form = UserForm(request.GET, request.FILES)
         if form.is_valid():
-            idUser = form.cleaned_data['id']
-            user = get_object_or_404(UserInformation, pk=idUser)
-            return render(request,'ratedFilms.html', {'usuario':user})
-    form=UserForm()
-    return render(request,'search_user.html', {'form':form })
+            id_user = form.cleaned_data['id']
+            user = get_object_or_404(User, pk=id_user)
+            return render(request, 'ratedPeripherals.html', {'user': user})
+    form = UserForm()
+    return render(request, 'searchUser.html', {'form': form})

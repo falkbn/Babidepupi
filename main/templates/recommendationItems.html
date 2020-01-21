@@ -1,13 +1,13 @@
 <html>
 <head>
-<title>Sistema de Recomendacion - Movielens</title>
+    <title>Babidepupi Recommendation Systems</title>
 </head>
 <body>
 {% include 'header.html' %}
-<h1>Peliculas Recomendadas para el Usuario {{user.id}}</h1>
+<h1>Peripherals recommended for user {{user.id}}</h1>
 {% for item, score in items %}
 <ul>
-<li>Title: {{item.movieTitle}}  Score:{{score | floatformat:"2"}}</li>
+    <li>Name:{{item.name}} Brand:{{item.brand}} Price:{{item.price}} Score:{{score | floatformat:"2"}}</li>
 </ul>
 {% empty %}
 <h2> Insufficient user data </h2>

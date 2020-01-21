@@ -1,0 +1,16 @@
+<html>
+<head>
+    <title>Babidepupi Recommendation Systems</title>
+</head>
+<body>
+{% include 'header.html' %}
+<section>
+    <h1>Recommended peripherals for {{peripheral.name}}:</h1>
+    <l>
+        {% for p, s in peripherals %}
+        <li>Name: {{p.name}} Brand:{{p.brand}} Price:{{p.price}} Similarity: {{s | floatformat:"2"}}</li>
+        {% endfor %}
+    </l>
+</section>
+</body>
+</html>
