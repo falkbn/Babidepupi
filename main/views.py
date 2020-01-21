@@ -27,7 +27,7 @@ def index(request):
     return render(request, 'index.html')
 
 
-def populate_db(request):
+def populate_db_view(request):
     populate_db()
     return render(request, 'populate.html')
 
@@ -51,9 +51,9 @@ def recommended_peripheral_user(request):
             peripherals = []
             scores = []
             for re in recommended:
-                films.append(Peripheral.objects.get(pk=re[1]))
+                peripherals.append(Peripheral.objects.get(pk=re[1]))
                 scores.append(re[0])
-            items = zip(films, scores)
+            items = zip(peripherals, scores)
             return render(request, 'recommendationItems.html', {'user': user, 'items': items})
     form = UserForm()
     return render(request, 'searchUser.html', {'form': form})
@@ -66,15 +66,13 @@ def recommended_peripheral_items(request):
             id_user = form.cleaned_data['id']
             user = get_object_or_404(User, pk=id_user)
             shelf = shelve.open("dataRS.dat")
-            Prefs = shelf['Prefs']
+            prefs = shelf['Prefs']
             sim_items = shelf['SimItems']
-            rankings= []
-            items=[]
-            if (int(idUser) not in Prefs):
-                return render(request,'recommendationItems.html', {'user': user, 'items': items})
-            SimItems = shelf['SimItems']
+            items = []
+            if int(id_user) not in prefs:
+                return render(request, 'recommendationItems.html', {'user': user, 'items': items})
             shelf.close()
-            rankings = getRecommendedItems(Prefs, sim_items, int(id_user))
+            rankings = getRecommendedItems(prefs, sim_items, int(id_user))
             recommended = rankings[:2]  # Change number of similar items recommended
             peripherals = []
             scores = []

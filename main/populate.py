@@ -73,7 +73,6 @@ def populate_ratings(number_ratings):
         res.append(Rating(user=random_user, peripheral=random_peripheral, rating=random_score))
         i += 1
     Rating.objects.bulk_create(res)
-    print(res)
     print("Ratings inserted: " + str(Rating.objects.count()))
     print("---------------------------------------------------------")
 
