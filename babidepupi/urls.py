@@ -12,6 +12,7 @@ urlpatterns = [
     path('recommendedPeripheralsUser', views.recommended_peripheral_user),
     path('similarPeripherals', views.similar_peripherals),
     path('recommendedUsersPeripherals', views.recommended_users_peripherals),
+    path('recommendedHybridPeripherals', views.recommended_hybrid),
     path('search', views.search),
     path('admin/', admin.site.urls),
 ]
