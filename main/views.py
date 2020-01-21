@@ -48,7 +48,7 @@ def recommended_peripheral_user(request):
             shelf.close()
             rankings = getRecommendations(Prefs, int(id_user))
             recommended = rankings[:2]
-            films = []
+            peripherals = []
             scores = []
             for re in recommended:
                 films.append(Peripheral.objects.get(pk=re[1]))
@@ -68,6 +68,11 @@ def recommended_peripheral_items(request):
             shelf = shelve.open("dataRS.dat")
             Prefs = shelf['Prefs']
             sim_items = shelf['SimItems']
+            rankings= []
+            items=[]
+            if (int(idUser) not in Prefs):
+                return render(request,'recommendationItems.html', {'user': user, 'items': items})
+            SimItems = shelf['SimItems']
             shelf.close()
             rankings = getRecommendedItems(Prefs, sim_items, int(id_user))
             recommended = rankings[:2]  # Change number of similar items recommended
