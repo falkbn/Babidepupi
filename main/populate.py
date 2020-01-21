@@ -1,37 +1,38 @@
 import django
-from main.database import * 
+from main.database import *
 from main.models import *
 
 
 def delete_tables():
-    Rating.objects.all().delete()
+    # Rating.objects.all().delete()
     User.objects.all().delete()
     Peripheral.objects.all().delete()
 
 
-
-# TODO: poblar usuarios a mansalva en algún momento
 def populate_users():
     print("Loading users...")
 
-    lista = []
+    res = []
     dict = {}
-    fileobj = open(path + "\\u.user", "r")
-    for line in fileobj.readlines():
-        rip = line.split('|')
-        if len(rip) != 5:
+    users = open("users.txt", "r")
+    for user in users.readlines():
+        trimed = user.split(';')
+        if len(trimed) != 5:
             continue
-        id_u = int(rip[0].strip())
-        u = UserInformation(id=id_u, age=rip[1].strip(), gender=rip[2].strip(),
-                            occupation=Occupation.objects.get(occupationName=rip[3].strip()), zipCode=rip[4].strip())
-        lista.append(u)
-        dict[id_u] = u
-    fileobj.close()
-    UserInformation.objects.bulk_create(lista)
+        id_user = int(trimed[0].strip())
+        username = str(trimed[1].strip())
+        age = int(trimed[2].strip())
+        gender = str(trimed[3].strip())
+        zip_code = int(trimed[4].strip())
+        u = User(id=id_user, username=username, age=age, gender=gender, zipCode=zip_code)
+        res.append(u)
+        dict[id_user] = u
+    users.close()
+    User.objects.bulk_create(res)
 
-    print("Users inserted: " + str(UserInformation.objects.count()))
+    print("Users inserted: " + str(User.objects.count()))
     print("---------------------------------------------------------")
-    return (dict)
+    return dict
 
 
 def populate_peripherals():
@@ -42,9 +43,9 @@ def populate_peripherals():
         for item in peripheral:
             print(item)
             res.append(
-                Peripheral(name = item[0],brand=item[1], image=item[2], price=item[3],
-                        type_db=item[5], stars=item[4])
-            
+                Peripheral(name=item[0], brand=item[1], image=item[2], price=item[3],
+                           type_db=item[5], stars=item[4])
+
             )
 
     Peripheral.objects.bulk_create(res)
@@ -70,10 +71,10 @@ def populate_ratings(user, peripheral):
 
 
 def populate_db():
-   # delete_tables()
-   # u = populate_users()
+    delete_tables()
+    u = populate_users()
     p = populate_peripherals()
-   # populate_ratings(u, p)
+    # populate_ratings(u, p)
     print("Finished database population")
 
 
