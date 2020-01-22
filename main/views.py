@@ -318,11 +318,12 @@ def vista2(request):
     username = request.POST.get('username')
 
     items = []
-    if recommendation_type is 'users':
+    if recommendation_type == 'users':
         items = __vista2_users(username)
-    if recommendation_type is 'items':
+    if recommendation_type == 'items':
         items = __vista2_items(username)
-    if recommendation_type is 'hybrid':
+    if recommendation_type == 'hybrid':
         items = __vista2_hybrid(username)
 
-    return render(request, 'vista2.html', {'user': username, 'items': items})
+    list_items = list(items)
+    return render(request, 'vista2.html', {'user': username, 'items': list_items})
