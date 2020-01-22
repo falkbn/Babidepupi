@@ -1,61 +1,34 @@
 <html>
 <head>
-<title>Babidepupi Recommendation System</title>
-
-
+    <title>Babidepupi Recommendation System</title>
 </head>
 <body>
 <div class="container">
 
-  <header>
-    <h2><a href="#"><i class="ion-plane"></i> Babidepupi</a></h2>
-    <nav>
-      <ul>
-        <li>
-          <a href="#" title="Hotels">Hotels</a>
-        </li>
-        <li>
-          <a href="#" title="Flights">Flights</a>
-        </li>
-        <li>
-          <a href="#" title="Tours">Tours</a>
-        </li>
-        <li>
-          <a class="btn" href="#" title="Register / Log In">Register/Log In</a>
-        </li>
-      </ul>
-    </nav>
-  </header>
+    <header>
+        <h2><a href="index.html"><i class="ion-plane"></i>Babidepupi - Peripherals Recommendation Systems</a></h2>
+    </header>
 
-  <div class="cover">
-    <h1>Discover what's out there.</h1>
-    <form  class="flex-form">
-      <label for="from">
-        <i class="ion-location"></i>
-      </label>
-      <input type="search" placeholder="Where do you want to go?">
-      <input type="submit" value="Search">
-    </form>
-    <div id="madeby">
-      <span>
-        Photo by <a href="https://unsplash.com/@benblenner" target="_blank">Ben Blennerhassett</a>
-      </span>
+    <div class="cover">
+        <h1>Welcome to Babidepupi</h1>
+        <form method="POST" action="/census/web/add" class="flex-form"> {% csrf_token %}
+            <label for="from">
+                <i class="ion-location"></i>
+            </label>
+                <select class="" id="select-recommendation-type" required>
+                    <option name="users" value="">Users Based</option>
+                    <option name="items" value="">Item Based</option>
+                    <option name="hybrid" value="">Hybrid Based</option>
+                </select>
+            <label for="from">
+                <i class="ion-location"></i>
+            </label>
+            <input type="search" placeholder="Username">
+            <input type="submit" value="Search">
+        </form>
     </div>
-  </div>
-
 </div>
-<h1>Welcome to Babidepupi!!!</h1>
 </body>
-
-
-
-
-
-
-
-
-
-
 
 <style>
     *, *:before, *:after {
@@ -85,7 +58,7 @@ html {
 body {
   font-family: 'Lato', sans-serif;
   margin: 0;
-  background: url('https://source.unsplash.com/G8rRItjrwkA') no-repeat center center fixed;
+  background: url('https://wallpaperscute.com/wp-content/uploads/2018/04/Computer-Wallpapers-Rick-and-Morty-Rick.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
@@ -183,8 +156,8 @@ a.btn:hover {
 }
 
 .flex-form input[type="submit"] {
-  background: #ef3f5a;
-  border: 1px solid #ef3f5a;
+  background: #70d026;
+  border: 1px solid #338b23;
   color: #fff;
   padding: 0 30px;
   cursor: pointer;
@@ -194,8 +167,8 @@ a.btn:hover {
 }
 
 .flex-form input[type="submit"]:hover {
-  background: #d73851;
-  border: 1px solid #d73851;
+  background: #beec65;
+  border: 1px solid #338b23;
 }
 
 .flex-form {
@@ -292,6 +265,12 @@ input[type="search"] {
     display: none;
   }
 }
+
+
+
+
+
+
 
 </style>
 </html>
