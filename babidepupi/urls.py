@@ -9,7 +9,7 @@ urlpatterns = [
     path('loadRS', views.load_rs),
     path('recommendedPeripheralsItems', views.recommended_peripheral_items),
     path('recommendedPeripheralsUser', views.recommended_peripheral_user),
-    path('similarPeripherals', views.similar_peripherals),
+    path('similarPeripherals', views.similar_items),
     path('recommendedUsersPeripherals', views.recommended_users_peripherals),
     path('recommendedHybridPeripherals', views.recommended_hybrid),
     path('search', views.search),

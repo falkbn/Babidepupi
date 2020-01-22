@@ -327,3 +327,24 @@ def vista2(request):
 
     list_items = list(items)
     return render(request, 'vista2.html', {'user': username, 'items': list_items})
+
+
+def similar_items(request):
+    peripheral_id = request.POST.get('id')
+    peripheral = get_object_or_404(Peripheral, pk=peripheral_id)
+
+    shelf = shelve.open("dataRS.dat")
+    items_prefs = shelf['ItemsPrefs']
+    shelf.close()
+
+    recommended = topMatches(items_prefs, int(peripheral_id), n=9)  # n: number of similar items
+
+    similar = []
+    peripherals = []
+    for re in recommended:
+        peripherals.append(Peripheral.objects.get(pk=re[1]))
+        similar.append(re[0])
+    items = zip(peripherals, similar)
+
+    list_items = list(items)
+    return render(request, 'vista2.html', {'user': peripheral.name, 'items': list_items})
