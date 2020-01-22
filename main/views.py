@@ -2,7 +2,8 @@ import shelve
 from main.models import User, Peripheral, Rating
 from main.forms import UserForm, PeripheralForm
 from django.shortcuts import render, get_object_or_404
-from main.recommendations import transformPrefs, getHybridRecommendation, calculateSimilarItems, getRecommendations, getRecommendedItems, topMatches
+from main.recommendations import transformPrefs, getHybridRecommendation, calculateSimilarItems, getRecommendations, \
+    getRecommendedItems, topMatches
 from main.populate import populate_db
 
 
@@ -28,7 +29,8 @@ def index(request):
 
 def populate_db_view(request):
     populate_db()
-    return render(request, 'populate.html')
+    msg = "Database loaded correctly"
+    return render(request, 'index.html', {'msg': msg})
 
 
 def load_rs(request):
@@ -49,7 +51,7 @@ def recommended_peripheral_user(request):
                 return render(request, 'recommendationItems.html', {'user': user, 'items': items})
             shelf.close()
             rankings = getRecommendations(prefs, int(id_user))
-            recommended = rankings[:20] # Change number of similar items recommended
+            recommended = rankings[:20]  # Change number of similar items recommended
             peripherals = []
             scores = []
             for re in recommended:
@@ -74,7 +76,7 @@ def recommended_peripheral_items(request):
             if int(id_user) not in prefs:
                 return render(request, 'recommendationItems.html', {'user': user, 'items': items})
             shelf.close()
-            getHybridRecommendation(prefs,int(id_user), sim_items)
+            getHybridRecommendation(prefs, int(id_user), sim_items)
             rankings = getRecommendedItems(prefs, sim_items, int(id_user))
             recommended = rankings[:20]  # Change number of similar items recommended
             peripherals = []
@@ -86,6 +88,7 @@ def recommended_peripheral_items(request):
             return render(request, 'recommendationItems.html', {'user': user, 'items': items})
     form = UserForm()
     return render(request, 'searchUser.html', {'form': form})
+
 
 def recommended_hybrid(request):
     if request.method == 'GET':
@@ -100,7 +103,85 @@ def recommended_hybrid(request):
             if int(id_user) not in prefs:
                 return render(request, 'recommendationItems.html', {'user': user, 'items': items})
             shelf.close()
-            rankings = getHybridRecommendation(prefs,int(id_user), sim_items)
+            rankings = getHybridRecommendation(prefs, int(id_user), sim_items)
+            recommended = rankings[:20]  # Change number of similar items recommended
+            peripherals = []
+            scores = []
+            for re in recommended:
+                peripherals.append(Peripheral.objects.get(pk=re[1]))
+                scores.append(re[0])
+            items = zip(peripherals, scores)
+            return render(request, 'recommendationItems.html', {'user': user, 'items': items})
+    form = UserForm()
+    return render(request, 'searchUser.html', {'form': form})
+
+
+def recommended_peripheral_user(request):
+    if request.method == 'GET':
+        form = UserForm(request.GET, request.FILES)
+        if form.is_valid():
+            id_user = form.cleaned_data['id']
+            user = get_object_or_404(User, pk=id_user)
+            shelf = shelve.open("dataRS.dat")
+            prefs = shelf['Prefs']
+            items = []
+            if int(id_user) not in prefs:
+                return render(request, 'recommendationItems.html', {'user': user, 'items': items})
+            shelf.close()
+            rankings = getRecommendations(prefs, int(id_user))
+            recommended = rankings[:20]  # Change number of similar items recommended
+            peripherals = []
+            scores = []
+            for re in recommended:
+                peripherals.append(Peripheral.objects.get(pk=re[1]))
+                scores.append(re[0])
+            items = zip(peripherals, scores)
+            return render(request, 'recommendationItems.html', {'user': user, 'items': items})
+    form = UserForm()
+    return render(request, 'searchUser.html', {'form': form})
+
+
+def recommended_peripheral_items(request):
+    if request.method == 'GET':
+        form = UserForm(request.GET, request.FILES)
+        if form.is_valid():
+            id_user = form.cleaned_data['id']
+            user = get_object_or_404(User, pk=id_user)
+            shelf = shelve.open("dataRS.dat")
+            prefs = shelf['Prefs']
+            sim_items = shelf['SimItems']
+            items = []
+            if int(id_user) not in prefs:
+                return render(request, 'recommendationItems.html', {'user': user, 'items': items})
+            shelf.close()
+            getHybridRecommendation(prefs, int(id_user), sim_items)
+            rankings = getRecommendedItems(prefs, sim_items, int(id_user))
+            recommended = rankings[:20]  # Change number of similar items recommended
+            peripherals = []
+            scores = []
+            for re in recommended:
+                peripherals.append(Peripheral.objects.get(pk=re[1]))
+                scores.append(re[0])
+            items = zip(peripherals, scores)
+            return render(request, 'recommendationItems.html', {'user': user, 'items': items})
+    form = UserForm()
+    return render(request, 'searchUser.html', {'form': form})
+
+
+def recommended_hybrid(request):
+    if request.method == 'GET':
+        form = UserForm(request.GET, request.FILES)
+        if form.is_valid():
+            id_user = form.cleaned_data['id']
+            user = get_object_or_404(User, pk=id_user)
+            shelf = shelve.open("dataRS.dat")
+            prefs = shelf['Prefs']
+            sim_items = shelf['SimItems']
+            items = []
+            if int(id_user) not in prefs:
+                return render(request, 'recommendationItems.html', {'user': user, 'items': items})
+            shelf.close()
+            rankings = getHybridRecommendation(prefs, int(id_user), sim_items)
             recommended = rankings[:20]  # Change number of similar items recommended
             peripherals = []
             scores = []
@@ -168,3 +249,80 @@ def search(request):
             return render(request, 'ratedPeripherals.html', {'user': user})
     form = UserForm()
     return render(request, 'searchUser.html', {'form': form})
+
+
+def __vista2_users(username):
+    user = User.objects.get(username=username)
+    user_id = user.pk
+
+    shelf = shelve.open("dataRS.dat")
+    prefs = shelf['Prefs']
+    shelf.close()
+
+    rankings = getRecommendations(prefs, int(user_id))
+    recommended = rankings[:10]  # Change number of similar items recommended
+
+    scores = []
+    peripherals = []
+    for re in recommended:
+        peripherals.append(Peripheral.objects.get(pk=re[1]))
+        scores.append(re[0])
+    items = zip(peripherals, scores)
+    return items
+
+
+def __vista2_items(username):
+    user = User.objects.get(username=username)
+    user_id = user.pk
+
+    shelf = shelve.open("dataRS.dat")
+    prefs = shelf['Prefs']
+    sim_items = shelf['SimItems']
+    shelf.close()
+
+    rankings = getRecommendedItems(prefs, sim_items, int(user_id))
+    recommended = rankings[:10]  # Change number of similar items recommended
+
+    scores = []
+    peripherals = []
+    for re in recommended:
+        peripherals.append(Peripheral.objects.get(pk=re[1]))
+        scores.append(re[0])
+    items = zip(peripherals, scores)
+    return items
+
+
+def __vista2_hybrid(username):
+    user = User.objects.get(username=username)
+    user_id = user.pk
+
+    shelf = shelve.open("dataRS.dat")
+    prefs = shelf['Prefs']
+    sim_items = shelf['SimItems']
+    shelf.close()
+
+    rankings = getHybridRecommendation(prefs, int(user_id), sim_items)
+    recommended = rankings[:10]  # Change number of similar items recommended
+
+    scores = []
+    peripherals = []
+    for re in recommended:
+        peripherals.append(Peripheral.objects.get(pk=re[1]))
+        scores.append(re[0])
+    items = zip(peripherals, scores)
+    return items
+
+
+def vista2(request):
+    recommendation_type = request.POST.get('select-recommendation-type')
+    username = request.POST.get('username')
+
+    items = []
+    if recommendation_type is 'users':
+        items = __vista2_users(username)
+    if recommendation_type is 'items':
+        items = __vista2_items(username)
+    if recommendation_type is 'hybrid':
+        items = __vista2_hybrid(username)
+
+    return render(request, 'vista2.html', {'user': username, 'items': items})

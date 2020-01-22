@@ -7,19 +7,31 @@
 
     <header>
         <h2><a href="index.html"><i class="ion-plane"></i>Babidepupi - Peripherals Recommendation Systems</a></h2>
+        <nav>
+            <ul>
+                <li>
+                    <a href="/populate/">Populate Data Base</a>
+                </li>
+            </ul>
+        </nav>
     </header>
 
     <div class="cover">
         <h1>Welcome to Babidepupi</h1>
-        <form method="POST" action="/census/web/add" class="flex-form"> {% csrf_token %}
+        {% if msg %}
+        <div>
+            <p>{{msg}}</p>
+        </div>
+        {% endif %}
+        <form method="POST" action="/vista2/" class="flex-form"> {% csrf_token %}
             <label for="from">
                 <i class="ion-location"></i>
             </label>
-                <select class="" id="select-recommendation-type" required>
-                    <option name="users" value="">Users Based</option>
-                    <option name="items" value="">Item Based</option>
-                    <option name="hybrid" value="">Hybrid Based</option>
-                </select>
+            <select name="select-recommendation-type" class="" id="select-recommendation-type" required>
+                <option name="users" value="user">Users Based</option>
+                <option name="items" value="item">Item Based</option>
+                <option name="hybrid" value="hybrid">Hybrid Based</option>
+            </select>
             <label for="from">
                 <i class="ion-location"></i>
             </label>
@@ -265,6 +277,7 @@ input[type="search"] {
     display: none;
   }
 }
+
 
 
 

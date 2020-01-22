@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class User(models.Model):
-    username = models.CharField(max_length=20, default="nickname")
+    username = models.CharField(max_length=20, default="username")
     age = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(100)])
     gender = models.CharField(max_length=1, choices=(('F', 'Female'), ('M', 'Male'),))
     zipCode = models.CharField(max_length=8)

@@ -1,7 +1,26 @@
 from main.database import *
 from main.models import *
+from main.views import *
+
 
 import random
+import shelve
+
+
+def load_dict():
+    prefs = {}
+    shelf = shelve.open("dataRS.dat")
+    ratings = Rating.objects.all()
+    for ra in ratings:
+        user = int(ra.user.id)
+        item_id = int(ra.peripheral.id)
+        rating = float(ra.rating)
+        prefs.setdefault(user, {})
+        prefs[user][item_id] = rating
+    shelf['Prefs'] = prefs
+    shelf['ItemsPrefs'] = transformPrefs(prefs)
+    shelf['SimItems'] = calculateSimilarItems(prefs, n=10)
+    shelf.close()
 
 
 def delete_tables():
@@ -69,7 +88,7 @@ def populate_ratings(number_ratings):
         for peripheral in peripherals:
             peripherals_id.append(peripheral.pk)
         random_score = random.randint(1, 5)
-        random_peripheral = Peripheral.objects.get(id=peripherals_id[random.randint(1, len(peripherals_id)-1)])
+        random_peripheral = Peripheral.objects.get(id=peripherals_id[random.randint(1, len(peripherals_id) - 1)])
         res.append(Rating(user=random_user, peripheral=random_peripheral, rating=random_score))
         i += 1
     Rating.objects.bulk_create(res)
@@ -82,6 +101,8 @@ def populate_db():
     populate_users()
     populate_peripherals()
     populate_ratings(9999)
+    load_dict()
+
     print("Finished database population")
 
 
