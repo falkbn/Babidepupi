@@ -330,8 +330,8 @@ def vista2(request):
 
 
 def similar_items(request):
-    peripheral_id = request.POST.get('id')
-    peripheral = get_object_or_404(Peripheral, pk=peripheral_id)
+    peripheral_id = request.GET.get('itemId')
+    peripheral = Peripheral.objects.get(pk=peripheral_id)
 
     shelf = shelve.open("dataRS.dat")
     items_prefs = shelf['ItemsPrefs']

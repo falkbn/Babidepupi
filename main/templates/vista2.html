@@ -8,7 +8,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <% include "styles2.html" %>
 </head>
 <body>
 
@@ -35,10 +36,10 @@
                                     {{item.0.price}} €</p>
                             </div>
                             <div class="col-xs-12 col-md-6">
-                            <form action = "/similarPeripherals">
-                                <input type = "hidden" name = "itemId" value = "{{item.0.id}}">
-                                <button type = "submit" class="btn btn-success">Find similar
-                                    peripherals</button>
+                                <form method="GET" action="/similarPeripherals">
+                                    <input type="hidden" name="itemId" value="{{item.0.id}}">
+                                    <button type="submit" class="btn btn-success">Find similar peripheral</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -59,75 +60,7 @@
     $('#grid').click(function(event){event.preventDefault();$('#products .item').removeClass('list-group-item');$('#products .item').addClass('grid-group-item');});
 });
 
+
 </script>
-<style>
-    html {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
 
-body {
-  font-family: 'Lato', sans-serif !important;
-  margin: 0;
-  background: url('https://wallpaperscute.com/wp-content/uploads/2018/04/Computer-Wallpapers-Rick-and-Morty-Rick.jpg') no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
-  color: #0a0a0b;
-}
-.list-group-image{
-    height: 150px !important;
-    width: auto !important;
-}
-.list-group-item-heading{
-        max-height: 19px !important;
-        overflow: hidden !important;
-}
-a {
-    color: #fff;
-    text-decoration: none;
-    cursor: pointer;
-    opacity: 0.9;
-}
-
-h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    color: #fff;
-    margin: 0 0 1.5rem;
-}
-h2 a:hover{
-    color: #fff;
-    text-decoration: none;
-}
-header {
-  position: relative;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  width: 100%;
-  display: block;
-  justify-content: space-between;
-  align-items: center;
-  color: #fff;
-  padding: 10px 100px 0;
-}
-
- header {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    flex-direction: column;
-    padding: 10px !important;
-  }
-
-  header h2 {
-    margin-bottom: 50px;
-    text-align:center
-  }
-  .cover h1{
-      text-align:center;
-      margin-bottom:40px   
-  }
-</style>
 </html>
