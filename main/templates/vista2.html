@@ -8,26 +8,17 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
 </head>
 <body>
 
 
 <div class="container">
     <header>
-        <h2><a href="/index.html"><i class="ion-plane"></i>Babidepupi - Peripherals Recommendation Systems</a></h2>
+        <h2><a href="/"><i class="ion-plane"></i>Babidepupi - Peripherals Recommendation Systems</a></h2>
     </header>
     <div class="cover">
         <h1>Recommended items for {{user}}</h1>
-        <div class="well well-sm">
-            <strong>Display</strong>
-            <div class="btn-group">
-                <a href="#" id="list" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th-list">
-            </span>List</a> <a href="#" id="grid" class="btn btn-default btn-sm"><span
-                    class="glyphicon glyphicon-th"></span>Grid</a>
-            </div>
-        </div>
         <div id="products" class="row list-group">
             {% for item in items %}
             <div class="item  col-xs-4 col-lg-4">
@@ -44,8 +35,10 @@
                                     {{item.0.price}} €</p>
                             </div>
                             <div class="col-xs-12 col-md-6">
-                                <a class="btn btn-success" href="/similarPeripherals/{{item.0.id}}">Find similar
-                                    peripherals</a>
+                            <form action = "/similarPeripherals">
+                                <input type = "hidden" name = "itemId" value = "{{item.0.id}}">
+                                <button type = "submit" class="btn btn-success">Find similar
+                                    peripherals</button>
                             </div>
                         </div>
                     </div>
@@ -68,66 +61,14 @@
 
 </script>
 <style>
-    .glyphicon { margin-right:5px; }
-.thumbnail
-{
-    margin-bottom: 20px;
-    padding: 0px;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    border-radius: 0px;
-}
-
-.item.list-group-item
-{
-    float: none;
-    width: 100%;
-    background-color: #fff;
-    margin-bottom: 10px;
-}
-.item.list-group-item:nth-of-type(odd):hover,.item.list-group-item:hover
-{
-    background: #428bca;
-}
-
-.item.list-group-item .list-group-image
-{
-    margin-right: 10px;
-}
-.item.list-group-item .thumbnail
-{
-    margin-bottom: 0px;
-}
-.item.list-group-item .caption
-{
-    padding: 9px 9px 0px 9px;
-}
-.item.list-group-item:nth-of-type(odd)
-{
-    background: #eeeeee;
-}
-
-.item.list-group-item:before, .item.list-group-item:after
-{
-    display: table;
-    content: " ";
-}
-
-.item.list-group-item img
-{
-    float: left;
-}
-.item.list-group-item:after
-{
-    clear: both;
-}
-.list-group-item-text
-{
-    margin: 0 0 11px;
+    html {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif !important;
   margin: 0;
   background: url('https://wallpaperscute.com/wp-content/uploads/2018/04/Computer-Wallpapers-Rick-and-Morty-Rick.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -135,20 +76,58 @@ body {
   background-size: cover;
   color: #0a0a0b;
 }
+.list-group-image{
+    height: 150px !important;
+    width: auto !important;
+}
+.list-group-item-heading{
+        max-height: 19px !important;
+        overflow: hidden !important;
+}
+a {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 0.9;
+}
 
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 1.5rem;
+}
+h2 a:hover{
+    color: #fff;
+    text-decoration: none;
+}
 header {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
   z-index: 10;
   width: 100%;
-  display: flex;
+  display: block;
   justify-content: space-between;
   align-items: center;
   color: #fff;
   padding: 10px 100px 0;
 }
 
+ header {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    padding: 10px !important;
+  }
 
+  header h2 {
+    margin-bottom: 50px;
+    text-align:center
+  }
+  .cover h1{
+      text-align:center;
+      margin-bottom:40px   
+  }
 </style>
 </html>
