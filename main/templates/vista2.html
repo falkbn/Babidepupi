@@ -19,6 +19,8 @@
 <header>
         <h2><a href="index.html"><i class="ion-plane"></i>Babidepupi - Peripherals Recommendation Systems</a></h2>
 </header>
+<div class="cover">
+        <h1>Recommended items for {{user}}</h1>
     <div class="well well-sm">
         <strong>Display</strong>
         <div class="btn-group">
@@ -43,7 +45,7 @@
                                 {{item.price}}</p>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <a class="btn btn-success" href="/similarPeripherals">Find similar peripherals</a>
+                            <a class="btn btn-success" href="/similarPeripherals/{{item.id}}">Find similar peripherals</a>
                         </div>
                     </div>
                 </div>
@@ -52,6 +54,7 @@
         {% empty %}
         <div>No peripherals selected</div>
         {% endfor %}
+    </div>
     </div>
 </div>
 
